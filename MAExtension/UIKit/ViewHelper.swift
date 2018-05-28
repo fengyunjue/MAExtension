@@ -107,3 +107,12 @@ extension UIView {
         set { var frame = self.frame; frame.origin.y = newValue - frame.height / 2; self.frame = frame }
     }
 }
+
+extension UIView {
+    public class func noAnimation(_ block: () -> Void) {
+        let animationsEnabled = UIView.areAnimationsEnabled
+        UIView.setAnimationsEnabled(false)
+        block()
+        UIView.setAnimationsEnabled(animationsEnabled)
+    }
+}
