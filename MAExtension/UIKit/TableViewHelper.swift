@@ -8,18 +8,18 @@
 import UIKit
 
 public struct RefreshMode: Equatable {
-    enum Model {
+    public enum Model {
         // 插入数据,是否刷新
         case insert
         // 删除数据
         case delete
     }
-    var model: Model
-    var isScrollBottom: Bool
+    public var model: Model
+    public var isScrollBottom: Bool
     
-    static var insert = RefreshMode.init(model: .insert, isScrollBottom: true)
-    static var insertNoScroll = RefreshMode.init(model: .insert, isScrollBottom: false)
-    static var delete = RefreshMode.init(model: .delete, isScrollBottom: true)
+    public static var insert = RefreshMode.init(model: .insert, isScrollBottom: true)
+    public static var insertNoScroll = RefreshMode.init(model: .insert, isScrollBottom: false)
+    public static var delete = RefreshMode.init(model: .delete, isScrollBottom: true)
     
     public static func == (lhs: RefreshMode, rhs: RefreshMode) -> Bool {
         return lhs.model == rhs.model
