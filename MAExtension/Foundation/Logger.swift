@@ -9,7 +9,7 @@
 import Foundation
 import NSLogger
 
-struct Log {
+public struct Log {
     public static func warn(_ format: Any?, _ domain: NSLogger.Logger.Domain = Logger.Domain.app,
                         _ filename: String = #file, lineNumber: Int = #line, fnName: String = #function) {
         Default(format, domain, .warning, filename, lineNumber: lineNumber, fnName: fnName)
