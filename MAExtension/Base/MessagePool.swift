@@ -38,12 +38,27 @@ public class MessagePool<T> {
     
     private var timer: Timer!
     
-    public init(maxPop: Int = 500, interval: TimeInterval = 0.5, maxTime: TimeInterval = 5, pop: @escaping (([T]) -> Void)) {
+    /// 初始化定时器
+    ///
+    /// - Parameters:
+    ///   - interval: 最小时间间隔
+    ///   - maxTime: 最大间隔时间
+    ///   - maxPop: 最大缓存数量
+    ///   - pop: 推出消息block
+    public init(interval: TimeInterval = 0.1, maxTime: TimeInterval = 1, maxPop: Int = 500, pop: @escaping (([T]) -> Void)) {
         self.maxPop = maxPop
         self.interval = interval
         self.maxTime = maxTime
         self.popBlock = pop
-        self.timer = Timer.init(timeInterval: self.interval, target: self, selector: #selector(tickDown), userInfo: nil, repeats: true)
+        self.timer = Timer.timer(interval: self.interval, repeats: true, block: {[weak self] _ in
+            if let weakSelf = self {
+                if !weakSelf.time.0 || weakSelf.time.1 >= maxTime || weakSelf.queue.count >= maxPop {
+                    weakSelf.pop()
+                }
+                weakSelf.time.0 = false
+                weakSelf.time.1 += weakSelf.interval
+            }
+        })
         RunLoop.main.add(timer, forMode: .commonModes)
     }
     
@@ -54,21 +69,12 @@ public class MessagePool<T> {
             time.0 = true
         }
         queue.append(contentsOf: messages)
-//        LogInfo("\(String(describing: messages.first))--\(queue.count)")
     }
-    /// 定时器触发事件
-    @objc private func tickDown() {
-        if !time.0 || time.1 >= maxTime || queue.count >= maxPop {
-            pop()
-        }
-        time.0 = false
-        time.1 += interval
-    }
+
     private func pop(){
         if isEmpty {
             // 如果消息池里没有了消息,则暂停定时器
             initial(timerType: .pause)
-//            LogInfo("如果消息池里没有了消息,则关闭定时器")
         }else{
             var messages : [T]!
             if size >= maxPop {
@@ -80,7 +86,6 @@ public class MessagePool<T> {
                 queue.removeAll(keepingCapacity: false)
             }
             self.popBlock(messages)
-//            LogInfo("有消息\(messages)")
             initial(timerType: .start)
         }
     }
