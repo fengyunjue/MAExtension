@@ -11,7 +11,7 @@ import Foundation
 public extension DispatchQueue {
     
     /// dispatch_after
-    public class func after(_ queue: DispatchQueue? = nil, _ after: TimeInterval, _ block: @escaping ()->Void) {
+    public class func after(queue: DispatchQueue? = nil, after: TimeInterval, block: @escaping ()->Void) {
         if let queue = queue {
             queue.asyncAfter(deadline: DispatchTime.now() + after, execute: block)
         }else{
