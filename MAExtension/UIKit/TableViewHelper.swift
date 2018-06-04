@@ -15,7 +15,7 @@ public enum RefreshMode {
     case insert(ScrollType) // 插入数据,是否刷新
     case delete(ScrollType) // 删除数据
     
-    var type: ScrollType {
+    public var type: ScrollType {
         switch self {
         case .insert(let type):
             return type
@@ -24,7 +24,7 @@ public enum RefreshMode {
         }
     }
     
-    var isDelete: Bool {
+    public var isDelete: Bool {
         switch self {
         case .delete(_):
             return true
@@ -33,7 +33,7 @@ public enum RefreshMode {
         }
     }
     
-    var isInsert: Bool {
+    public var isInsert: Bool {
         switch self {
         case .insert(_):
             return true
