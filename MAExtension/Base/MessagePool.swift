@@ -38,6 +38,16 @@ public class MessagePool<T> {
     
     private var timer: Timer!
     
+    /// 快捷初始化
+    ///
+    /// - Parameters:
+    ///   - interval: 间隔时间
+    ///   - maxPop: 最大数量
+    ///   - pop: 回掉block
+    public convenience init(interval: TimeInterval = 0.5, maxPop: Int = 50, pop: @escaping (([T]) -> Void)){
+        self.init(interval: interval, maxTime: interval, maxPop: maxPop, pop: pop)
+    }
+    
     /// 初始化定时器
     ///
     /// - Parameters:
@@ -45,14 +55,16 @@ public class MessagePool<T> {
     ///   - maxTime: 最大间隔时间
     ///   - maxPop: 最大缓存数量
     ///   - pop: 推出消息block
-    public init(interval: TimeInterval = 0.1, maxTime: TimeInterval = 1, maxPop: Int = 500, pop: @escaping (([T]) -> Void)) {
+    ///   warning: 当在interval时间内有消息push时,重新计时,当总时间等于maxTime时,将pop<=maxPop的消息
+    public init(interval: TimeInterval = 0.5, maxTime: TimeInterval = 1, maxPop: Int = 50, pop: @escaping (([T]) -> Void)) {
         self.maxPop = maxPop
         self.interval = interval
         self.maxTime = maxTime
         self.popBlock = pop
         self.timer = Timer.timer(interval: self.interval, repeats: true, block: {[weak self] _ in
             if let weakSelf = self {
-                if !weakSelf.time.0 || weakSelf.time.1 >= maxTime || weakSelf.queue.count >= maxPop {
+                if !weakSelf.time.0 || weakSelf.time.1 >= weakSelf.maxTime || weakSelf.queue.count >= weakSelf.maxPop {
+                    print(weakSelf.time, weakSelf.maxTime,weakSelf.maxPop,weakSelf.queue.count )
                     weakSelf.pop()
                 }
                 weakSelf.time.0 = false
@@ -70,7 +82,7 @@ public class MessagePool<T> {
         }
         queue.append(contentsOf: messages)
     }
-
+    
     private func pop(){
         if isEmpty {
             // 如果消息池里没有了消息,则暂停定时器
