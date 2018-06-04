@@ -64,7 +64,6 @@ public class MessagePool<T> {
         self.timer = Timer.timer(interval: self.interval, repeats: true, block: {[weak self] _ in
             if let weakSelf = self {
                 if !weakSelf.time.0 || weakSelf.time.1 >= weakSelf.maxTime || weakSelf.queue.count >= weakSelf.maxPop {
-                    print(weakSelf.time, weakSelf.maxTime,weakSelf.maxPop,weakSelf.queue.count )
                     weakSelf.pop()
                 }
                 weakSelf.time.0 = false
