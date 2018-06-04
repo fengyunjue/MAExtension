@@ -141,4 +141,17 @@ extension Reloadable where Model: Comparable {
     public func scrollBottom(_ animated: Bool = true) {
         self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: animated)
     }
+    
+    public func classifyModel(_ models: [(Model, RefreshMode)]) -> ([(Model, RefreshMode)], [(Model, RefreshMode)]) {
+        var deleteMessages: [(Model, RefreshMode)] = []
+        var insertMessages: [(Model, RefreshMode)] = []
+        models.forEach({ (model, mode) in
+            if mode.isInsert {
+                insertMessages.append((model, mode))
+            }else{
+                deleteMessages.append((model, mode))
+            }
+        })
+        return (insertMessages, deleteMessages)
+    }
 }
