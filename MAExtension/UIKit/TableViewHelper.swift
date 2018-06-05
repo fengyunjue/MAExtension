@@ -58,10 +58,9 @@ public protocol Reloadable {
 extension Reloadable where Model: Comparable {
     
     public mutating func refresh(_ models: [(Model, RefreshMode)]){
-        var weakSelf = self
         
         if models.count == 0 { return }
-        let oldModels = weakSelf.models
+        let oldModels = self.models
         
         var addModels: Set<Model> = Set()
         var deleteModels: Set<Model> = Set()
@@ -79,9 +78,9 @@ extension Reloadable where Model: Comparable {
         }
         
         // 处理数据
-        weakSelf.models.remove(contentsOf: deleteModels)
+        self.models.remove(contentsOf: deleteModels)
         
-        let orders = weakSelf.models.insertOrder(contentsOf: addModels)
+        let orders = self.models.insertOrder(contentsOf: addModels)
         
         let deleteIndexPaths: [IndexPath] = deleteModels.compactMap{ (model) -> IndexPath? in
             if let index = oldModels.index(of: model) {
@@ -98,7 +97,7 @@ extension Reloadable where Model: Comparable {
             }
         }
         let insertIndexPaths: [IndexPath] = orders.0.compactMap { (model) -> IndexPath? in
-            if let index = weakSelf.models.index(of: model) {
+            if let index = self.models.index(of: model) {
                 return IndexPath.init(row: index, section: 0)
             }else{
                 return nil
@@ -116,22 +115,22 @@ extension Reloadable where Model: Comparable {
             }
         }
         UIView.noAnimation {
-            weakSelf.reloadTableView.beginUpdates()
+            self.reloadTableView.beginUpdates()
             if deleteIndexPaths.count > 0{
-                weakSelf.reloadTableView.deleteRows(at: deleteIndexPaths, with: .none)
+                self.reloadTableView.deleteRows(at: deleteIndexPaths, with: .none)
             }
             if insertIndexPaths.count > 0{
-                weakSelf.reloadTableView.insertRows(at: insertIndexPaths, with: .none)
+                self.reloadTableView.insertRows(at: insertIndexPaths, with: .none)
             }
             if reloadIndexPaths.count > 0{
-                weakSelf.reloadTableView.reloadRows(at: reloadIndexPaths, with: .none)
+                self.reloadTableView.reloadRows(at: reloadIndexPaths, with: .none)
             }
-            weakSelf.reloadTableView.endUpdates()
+            self.reloadTableView.endUpdates()
             
             if scrollType == .bottom {
-                weakSelf.reloadTableView.scrollToRow(at: IndexPath.init(row: weakSelf.models.count-1, section: 0), at: .bottom, animated: true)
+                self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: true)
             }else if scrollType == .hold && bottomIndexPath != nil && offsetInset != nil{
-                weakSelf.reloadTableView.scrollToRow(at: bottomIndexPath!, at: .none, animated: false)
+                self.reloadTableView.scrollToRow(at: bottomIndexPath!, at: .none, animated: false)
                 var offset = self.reloadTableView.contentOffset
                 offset.y -= offsetInset!
                 self.reloadTableView.contentOffset = offset
