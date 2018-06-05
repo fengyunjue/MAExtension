@@ -43,7 +43,7 @@ public class MessagePool<T> {
     /// - Parameters:
     ///   - interval: 间隔时间
     ///   - maxPop: 最大数量
-    ///   - pop: 回掉block
+    ///   - pop: 推出消息block
     public convenience init(interval: TimeInterval = 0.5, maxPop: Int = 50, pop: @escaping (([T]) -> Void)){
         self.init(interval: interval, maxTime: interval, maxPop: maxPop, pop: pop)
     }
@@ -72,7 +72,7 @@ public class MessagePool<T> {
         })
         RunLoop.main.add(timer, forMode: .commonModes)
     }
-    
+    /// push消息
     public func push(_ messages: [T]){
         if timerType != .start {// 如果计时器被暂停,则说明刚才是静默状态
             initial(timerType: .start)
@@ -82,7 +82,8 @@ public class MessagePool<T> {
         queue.append(contentsOf: messages)
     }
     
-    private func pop(){
+    /// pop消息,根据定时器时间pop消息
+    public func pop(){
         if isEmpty {
             // 如果消息池里没有了消息,则暂停定时器
             initial(timerType: .pause)

@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
     s.name             = 'MAExtension'
-    s.version          = '0.1.8'
+    s.version          = '0.1.9'
     s.summary          = 'A short description of MAExtension.'
 
     # This description is used to generate tags and improve search results.
@@ -30,17 +30,25 @@ Pod::Spec.new do |s|
     # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
     s.ios.deployment_target = '9.0'
-
-    s.source_files = 'MAExtension/**/*'
-
+    
     s.pod_target_xcconfig = {
         'SWIFT_VERSION' => '4.1'
     }
-
-    # s.frameworks = 'UIKit', 'MapKit'
-    s.dependency 'RxSwift'
-    s.dependency 'SwiftyJSON'
-    s.dependency 'NSLogger/Swift'
-    s.dependency 'MJRefresh'
     
+    s.default_subspec = 'Base'
+    # s.frameworks = 'UIKit', 'MapKit'
+    
+    s.subspec 'Base' do |base|
+        base.source_files = 'MAExtension/{Base,Foundation,UIKit}/*'
+    end
+    
+    s.subspec 'NSLogger' do |logger|
+        logger.source_files = 'MAExtension/NSLogger/*'
+        s.dependency 'NSLogger/Swift'
+    end
+    
+    s.subspec 'JSON' do |json|
+        json.source_files = 'MAExtension/JSON/*'
+        s.dependency 'SwiftyJSON'
+    end
 end
