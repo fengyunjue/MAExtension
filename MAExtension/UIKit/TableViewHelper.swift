@@ -12,7 +12,7 @@ public enum ScrollType {
     case hold   // 滚动到原来的位置,界面上不动
 }
 public enum RefreshMode {
-    case insert(ScrollType) // 插入数据,是否刷新
+    case insert(ScrollType) // 插入数据
     case delete(ScrollType) // 删除数据
     
     public var type: ScrollType {
@@ -78,31 +78,12 @@ extension Reloadable where Model: Comparable {
         }
         
         // 处理数据
-        self.models.remove(contentsOf: deleteModels)
+        let deleteIndexPaths: [IndexPath] = self.models.remove(contentsOf: deleteModels).compactMap {($0 != nil) ? IndexPath.init(row: $0!, section: 0) : nil}
+
+        let orderIndexs = self.models.insertOrderIndexs(contentsOf: addModels)
         
-        let orders = self.models.insertOrder(contentsOf: addModels)
-        
-        let deleteIndexPaths: [IndexPath] = deleteModels.compactMap{ (model) -> IndexPath? in
-            if let index = oldModels.index(of: model) {
-                return IndexPath.init(row: index, section: 0)
-            }else{
-                return nil
-            }
-        }
-        let reloadIndexPaths: [IndexPath] = orders.1.compactMap { (model) -> IndexPath? in
-            if let index = oldModels.index(of: model) {
-                return IndexPath.init(row: index, section: 0)
-            }else{
-                return nil
-            }
-        }
-        let insertIndexPaths: [IndexPath] = orders.0.compactMap { (model) -> IndexPath? in
-            if let index = self.models.index(of: model) {
-                return IndexPath.init(row: index, section: 0)
-            }else{
-                return nil
-            }
-        }
+        let reloadIndexPaths:[IndexPath]  = orderIndexs.1.map{IndexPath.init(row: $0, section: 0)}
+        let insertIndexPaths: [IndexPath] = orderIndexs.0.map{IndexPath.init(row: $0, section: 0)}
         
         var bottomIndexPath: IndexPath? = nil
         // bottom的偏移量

@@ -20,10 +20,13 @@ extension Array where Element: Equatable {
             return nil
         }
     }
-    public mutating func remove<S>(contentsOf oldElements: S) where Element == S.Element, S : Sequence {
+    @discardableResult
+    public mutating func remove<S>(contentsOf oldElements: S) -> [Int?] where Element == S.Element, S : Sequence  {
+        var indexs: [Int?] = []
         oldElements.forEach { (element) in
-            self.remove(element: element)
+            indexs.append(self.remove(element: element))
         }
+        return indexs
     }
 }
 
@@ -47,7 +50,7 @@ extension Array where Element: Comparable {
             return (index, true)
         }
     }
-    
+    @discardableResult
     public mutating func insertOrder<S>(contentsOf newElements: S) -> ([Element], [Element]) where Element == S.Element, S : Sequence{
         var inserts: [Element] = []
         var reloads: [Element] = []
@@ -58,6 +61,21 @@ extension Array where Element: Comparable {
                 inserts.append(m)
             }else {
                 reloads.append(m)
+            }
+        }
+        return (inserts, reloads)
+    }
+    @discardableResult
+    public mutating func insertOrderIndexs<S>(contentsOf newElements: S) -> ([Int], [Int]) where Element == S.Element, S : Sequence{
+        var inserts: [Int] = []
+        var reloads: [Int] = []
+        
+        newElements.forEach { (m) in
+            let result = self.insertOrder(m)
+            if result.1 {
+                inserts.append(result.0)
+            }else {
+                reloads.append(result.0)
             }
         }
         return (inserts, reloads)
