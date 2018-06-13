@@ -1,11 +1,13 @@
 PODS:
-  - MAExtension (0.1.10):
-    - MAExtension/Base (= 0.1.10)
-    - NSLogger/Swift
+  - MAExtension (0.1.11):
+    - MAExtension/Base (= 0.1.11)
+    - MAExtension/JSON (= 0.1.11)
+    - MAExtension/NSLogger (= 0.1.11)
+  - MAExtension/Base (0.1.11)
+  - MAExtension/JSON (0.1.11):
     - SwiftyJSON
-  - MAExtension/Base (0.1.10):
+  - MAExtension/NSLogger (0.1.11):
     - NSLogger/Swift
-    - SwiftyJSON
   - NSLogger/ObjC (1.9.0)
   - NSLogger/Swift (1.9.0):
     - NSLogger/ObjC
@@ -24,7 +26,7 @@ EXTERNAL SOURCES:
     :path: "."
 
 SPEC CHECKSUMS:
-  MAExtension: 86bdd6634e12f354ec803d82a00ee152d2ac9968
+  MAExtension: ed9f53e33427702bc6bccee3cfe99e68c6ff8681
   NSLogger: 9f8f5ab017eb34d1a138f4905dc7fb8e9a0e3186
   SwiftyJSON: c29297daf073d2aa016295d5809cdd68045c39b3
 

@@ -29,6 +29,35 @@ public protocol Mapable: Convertible {
     static func modelArray(_ json: JSON?) -> Array<Self>
 }
 
+extension Dictionary{
+    /// 包含
+    public func isSub(of dict: Dictionary) -> Bool {
+        let selfJSON = JSON.init(self)
+        let dictJSON = JSON.init(dict)
+        var isSub = true
+        for (key,value) in selfJSON.dictionaryValue {
+            isSub = dictJSON[key] == value
+            if isSub == false {break}
+        }
+        return isSub
+    }
+    /// 严格包含
+    public func isStrictSub(of dict: Dictionary) -> Bool {
+        return  (self as NSDictionary != dict as NSDictionary) && self.isSub(of: dict)
+    }
+    /// 超集
+    public func isSuper(of dict: Dictionary) -> Bool {
+        return dict.isSub(of: self)
+    }
+    /// 严格超集
+    public func isStrictSuper(of dict: Dictionary) -> Bool {
+        return dict.isStrictSub(of: self)
+    }
+}
+
+
+
+
 infix operator <-
 
 public func <- <T: Equatable>(left: inout T?, right: (String?, (String)-> T?)) {
