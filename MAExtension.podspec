@@ -43,11 +43,11 @@ Pod::Spec.new do |s|
     
     s.subspec 'NSLogger' do |logger|
         logger.source_files = 'MAExtension/NSLogger/*'
-        s.dependency 'NSLogger/Swift'
+        logger.dependency 'NSLogger/Swift'
     end
     
     s.subspec 'JSON' do |json|
         json.source_files = 'MAExtension/JSON/*'
-        s.dependency 'SwiftyJSON'
+        json.dependency 'SwiftyJSON'
     end
 end
