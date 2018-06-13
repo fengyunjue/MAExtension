@@ -74,6 +74,7 @@ public class MessagePool<T> {
     }
     /// push消息
     public func push(_ messages: [T]){
+        if messages.count == 0 { return }
         if timerType != .start {// 如果计时器被暂停,则说明刚才是静默状态
             initial(timerType: .start)
         }else{

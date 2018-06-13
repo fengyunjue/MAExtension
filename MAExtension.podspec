@@ -35,7 +35,6 @@ Pod::Spec.new do |s|
         'SWIFT_VERSION' => '4.1'
     }
     
-    s.default_subspec = 'Base'
     # s.frameworks = 'UIKit', 'MapKit'
     
     s.subspec 'Base' do |base|
