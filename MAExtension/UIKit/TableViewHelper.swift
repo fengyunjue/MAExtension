@@ -16,11 +16,21 @@ public enum RefreshMode {
     case delete(ScrollType) // 删除数据
     
     public var type: ScrollType {
-        switch self {
-        case .insert(let type):
-            return type
-        case .delete(let type):
-            return type
+        get {
+            switch self {
+            case .insert(let type):
+                return type
+            case .delete(let type):
+                return type
+            }
+        }
+        set (newType) {
+            switch self {
+            case .insert(_):
+                self = .insert(newType)
+            case .delete(_):
+                self = .delete(newType)
+            }
         }
     }
     
