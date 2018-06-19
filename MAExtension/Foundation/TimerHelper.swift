@@ -8,12 +8,12 @@
 import Foundation
 
 extension Timer {
-    public static func timer(interval: TimeInterval, repeats: Bool, block: @escaping (Timer) -> Swift.Void) -> Timer {
+    public static func timer(interval: TimeInterval, repeats: Bool = false, model: RunLoopMode = .commonModes, block: @escaping (Timer) -> Swift.Void) -> Timer {
         let timer = Timer.init(timeInterval: interval, target: self, selector: #selector(Timer.trigger(_:)), userInfo: block, repeats: repeats)
-        RunLoop.current.add(timer, forMode: .commonModes)
+        RunLoop.current.add(timer, forMode: model)
         return timer
     }
-     @objc private static func trigger(_ timer: Timer) {
+    @objc private static func trigger(_ timer: Timer) {
         let block = timer.userInfo as? ((Timer) -> Void)
         if let block = block {
             block(timer)

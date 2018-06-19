@@ -44,8 +44,8 @@ public class MessagePool<T> {
     ///   - interval: 间隔时间
     ///   - maxPop: 最大数量
     ///   - pop: 推出消息block
-    public convenience init(interval: TimeInterval = 0.5, maxPop: Int = 50, pop: @escaping (([T]) -> Void)){
-        self.init(interval: interval, maxTime: interval, maxPop: maxPop, pop: pop)
+    public convenience init(interval: TimeInterval = 0.5, maxPop: Int = 50, mode: RunLoopMode = .commonModes, pop: @escaping (([T]) -> Void)){
+        self.init(interval: interval, maxTime: interval, maxPop: maxPop, mode: mode, pop: pop)
     }
     
     /// 初始化定时器
@@ -56,12 +56,12 @@ public class MessagePool<T> {
     ///   - maxPop: 最大缓存数量
     ///   - pop: 推出消息block
     ///   warning: 当在interval时间内有消息push时,重新计时,当总时间等于maxTime时,将pop<=maxPop的消息
-    public init(interval: TimeInterval = 0.5, maxTime: TimeInterval = 1, maxPop: Int = 50, pop: @escaping (([T]) -> Void)) {
+    public init(interval: TimeInterval = 0.5, maxTime: TimeInterval = 1, maxPop: Int = 50, mode: RunLoopMode = .commonModes, pop: @escaping (([T]) -> Void)) {
         self.maxPop = maxPop
         self.interval = interval
         self.maxTime = maxTime
         self.popBlock = pop
-        self.timer = Timer.timer(interval: self.interval, repeats: true, block: {[weak self] _ in
+        self.timer = Timer.timer(interval: self.interval, repeats: true, model: mode, block: {[weak self] _ in
             if let weakSelf = self {
                 if !weakSelf.time.0 || weakSelf.time.1 >= weakSelf.maxTime || weakSelf.queue.count >= weakSelf.maxPop {
                     weakSelf.pop()
@@ -70,7 +70,6 @@ public class MessagePool<T> {
                 weakSelf.time.1 += weakSelf.interval
             }
         })
-        RunLoop.main.add(timer, forMode: .commonModes)
     }
     /// push消息
     public func push(_ messages: [T]){
