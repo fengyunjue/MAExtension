@@ -34,12 +34,12 @@ public protocol Reloadable {
     var models: [Model] { get set }
     var reloadTableView: UITableView { get }
     
-    mutating func refresh(_ models: [(Model, RefreshMode)], scrollType: ScrollType)
+    mutating func refresh(_ models: [(Model, RefreshMode)], _ scrollType: ScrollType)
 }
 
 extension Reloadable where Model: Comparable {
     
-    public mutating func refresh(_ models: [(Model, RefreshMode)], scrollType: ScrollType = .bottom) {
+    public mutating func refresh(_ models: [(Model, RefreshMode)], _ scrollType: ScrollType = .bottom) {
         
         if models.count == 0 { return }
         
