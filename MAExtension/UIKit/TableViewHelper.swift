@@ -68,6 +68,17 @@ extension Reloadable where Model: Comparable {
         let reloadIndexPaths: [IndexPath] = orders.1.compactMap{IndexPath.init(row: oldModels.index(of: $0), section: 0)}
         let insertIndexPaths: [IndexPath] = orders.0.compactMap{IndexPath.init(row: self.models.index(of: $0), section: 0)}
         
+        // bottom的偏移量
+        var bottomIndexPath: IndexPath? = nil
+        var offsetInset: CGFloat? = nil
+        if scrollType == .hold, let cell = self.reloadTableView.visibleCells.last, let indexPath = self.reloadTableView.indexPath(for: cell), indexPath.row < oldModels.count {
+            let model = oldModels[indexPath.row]
+            if let index = self.models.index(of: model) {
+                bottomIndexPath = IndexPath.init(row: index, section: 0)
+                offsetInset = cell.frame.maxY - self.reloadTableView.frame.height - self.reloadTableView.contentOffset.y
+            }
+        }
+        
         UIView.noAnimation {
             self.reloadTableView.beginUpdates()
             if deleteIndexPaths.count > 0{
@@ -83,20 +94,11 @@ extension Reloadable where Model: Comparable {
             
             if scrollType == .bottom {
                 self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: true)
-            }else if scrollType == .hold {
-                // 计算出tableView界面上显示的最后一个cell,在更新后的位置,并重新滚动到该位置
-                if let cell = self.reloadTableView.visibleCells.last, let indexPath = self.reloadTableView.indexPath(for: cell), indexPath.row < oldModels.count, let index = self.models.index(of: oldModels[indexPath.row]) {
-                    // 最后一个cell的IndexPath
-                    let bottomIndexPath = IndexPath.init(row: index, section: 0)
-                    // bottom的偏移量
-                    let offsetInset = cell.frame.maxY - self.reloadTableView.frame.height - self.reloadTableView.contentOffset.y
-                    
-                    // 滚动
-                    self.reloadTableView.scrollToRow(at: bottomIndexPath, at: .none, animated: false)
-                    var offset = self.reloadTableView.contentOffset
-                    offset.y -= offsetInset
-                    self.reloadTableView.contentOffset = offset
-                }
+            }else if scrollType == .hold && bottomIndexPath != nil && offsetInset != nil{
+                self.reloadTableView.scrollToRow(at: bottomIndexPath!, at: .none, animated: false)
+                var offset = self.reloadTableView.contentOffset
+                offset.y -= offsetInset!
+                self.reloadTableView.contentOffset = offset
             }
         }
     }
