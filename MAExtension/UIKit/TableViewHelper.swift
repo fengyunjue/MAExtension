@@ -92,7 +92,7 @@ extension Reloadable where Model: Comparable {
             self.reloadTableView.endUpdates()
             
             if scrollType == .bottom {
-                self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: true)
+                scrollBottom()
             }else if scrollType == .hold && bottomIndexPath != nil && offsetInset != nil{
                 self.reloadTableView.scrollToRow(at: bottomIndexPath!, at: .none, animated: false)
                 var offset = self.reloadTableView.contentOffset
@@ -103,6 +103,8 @@ extension Reloadable where Model: Comparable {
     }
     
     public func scrollBottom(_ animated: Bool = true) {
-        self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: animated)
+        if self.models.count > 0 {
+            self.reloadTableView.scrollToRow(at: IndexPath.init(row: self.models.count-1, section: 0), at: .bottom, animated: animated)
+        }
     }
 }
