@@ -59,12 +59,11 @@ extension Reloadable where Model: Comparable {
             }
         }
         
-        // 需要删除的数据
-        let deleteIndexPaths: [IndexPath] =  self.models.remove(contentsOf: deleteModels).map{IndexPath.init(row: $0, section: 0)}
-        
-        // 需要添加或更新的数据
+        // 处理数据
+        self.models.remove(contentsOf: deleteModels)
         let orders = self.models.insertOrder(contentsOf: addModels)
         
+        let deleteIndexPaths: [IndexPath] =  deleteModels.compactMap{IndexPath.init(row: oldModels.index(of: $0), section: 0)}
         let reloadIndexPaths: [IndexPath] = orders.1.compactMap{IndexPath.init(row: oldModels.index(of: $0), section: 0)}
         let insertIndexPaths: [IndexPath] = orders.0.compactMap{IndexPath.init(row: self.models.index(of: $0), section: 0)}
         

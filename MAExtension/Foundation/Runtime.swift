@@ -51,6 +51,7 @@ extension NSObject {
     ///   - swizzledSelector: 替换方法
     /// - Returns: 是否替换成功
     /// - Warning: Swift需要在要替换的方法前添加dynamic关键字
+    @discardableResult
     public static func swizzleMethod(originalSelector:Selector, swizzledSelector:Selector) -> Bool{
         
         let originalMethod = class_getInstanceMethod(self, originalSelector)
@@ -74,6 +75,7 @@ extension NSObject {
     ///   - swizzledSelector: 替换方法
     /// - Returns: 是否替换成功
     /// - Warning: Swift需要在要替换的方法前添加dynamic关键字
+    @discardableResult
     public static func swizzleClassMethod(originalSelector:Selector, swizzledSelector:Selector) -> Bool {
         return self.swizzleMethod(originalSelector: originalSelector, swizzledSelector: swizzledSelector)
     }
