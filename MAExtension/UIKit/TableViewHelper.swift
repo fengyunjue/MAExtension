@@ -119,7 +119,7 @@ extension Reloadable {
             if newValue != hasHeader {
                 self.reloadTableView.tableHeaderView = newValue ? activityView() : nil
                 var offset = self.reloadTableView.contentOffset
-                offset.y = offset.y + (hasHeader ? 20 : -20)
+                offset.y = offset.y + (newValue ? 20 : -20)
                 self.reloadTableView.contentOffset = offset
             }
         }
@@ -130,7 +130,7 @@ extension Reloadable {
             return self.reloadTableView.tableFooterView != nil
         }
         set {
-            if newValue != hasHeader {
+            if newValue != hasFooter {
                 self.reloadTableView.tableFooterView = newValue ? activityView() : nil
             }
         }
