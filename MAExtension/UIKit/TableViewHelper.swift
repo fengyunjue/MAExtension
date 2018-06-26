@@ -108,3 +108,37 @@ extension Reloadable where Model: Comparable {
         }
     }
 }
+
+
+extension Reloadable {
+    public var hasHeader : Bool {
+        get {
+            return self.reloadTableView.tableHeaderView != nil
+        }
+        set {
+            if newValue != hasHeader {
+                self.reloadTableView.tableHeaderView = newValue ? activityView() : nil
+                var offset = self.reloadTableView.contentOffset
+                offset.y = offset.y + (hasHeader ? 20 : -20)
+                self.reloadTableView.contentOffset = offset
+            }
+        }
+    }
+    
+    public var hasFooter : Bool {
+        get {
+            return self.reloadTableView.tableFooterView != nil
+        }
+        set {
+            if newValue != hasHeader {
+                self.reloadTableView.tableFooterView = newValue ? activityView() : nil
+            }
+        }
+    }
+    
+    private func activityView() -> UIView{
+        let view = UIActivityIndicatorView.init(activityIndicatorStyle: .gray)
+        view.startAnimating()
+        return view
+    }
+}

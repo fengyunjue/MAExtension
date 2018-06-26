@@ -28,22 +28,16 @@ extension Array where Element: Equatable {
     public mutating func remove(element: Element) -> Int?{
         if let index = self.index(of: element) {
             self.remove(at: index)
-            self.append(contentsOf: [])
             return index
         }else{
             return nil
         }
     }
     
-    @discardableResult
-    public mutating func remove<S>(contentsOf oldElements: S) -> [Int] where Element == S.Element, S : Sequence {
-        var indexs: [Int] = []
-        oldElements.forEach { (element) in
-            if let index = self.remove(element: element) {
-                indexs.append(index)
-            }
+    public mutating func remove<S>(contentsOf elements: S) where Element == S.Element, S : Sequence {
+        elements.forEach { (element) in
+            self.remove(element: element)
         }
-        return indexs
     }
 }
 
